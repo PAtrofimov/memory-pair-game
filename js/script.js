@@ -1,32 +1,3 @@
-let makeElement = (tagName, className, textInfo, srcInfo) => {
-  let element = document.createElement(tagName);
-  element.classList.add(className);
-  if (textInfo) {
-    element.textContent = textInfo;
-  }
-  if (srcInfo) {
-    element.src = srcInfo;
-  }
-  return element;
-};
-let createContent = item => {
-  let content = makeElement("div", "flip-box");
-
-  let flipper = makeElement("div", "flipper");
-
-  let flipper_front = makeElement("div", "flip-box__front");
-  let flipper_back = makeElement("div", "flip-box__back");
-
-  let image = makeElement("img", "flip-box__img", "", item);
-
-  flipper_back.appendChild(image);
-
-  flipper.appendChild(flipper_front);
-  flipper.appendChild(flipper_back);
-  content.appendChild(flipper);
-
-  return content;
-};
 
 class Game {
   constructor() {
@@ -46,13 +17,40 @@ class Game {
       "img/head006.png"
     ];
   }
-
+ 
   addListeners() {
     this.main.addEventListener("click", event => {
       this.toggleCard(event.target);
       this.disableCards();
     });
   }
+  
+  makeElement (tagName, className, textInfo, srcInfo) {
+  const element = document.createElement(tagName);
+  element.classList.add(className);
+  if (textInfo) {
+    element.textContent = textInfo;
+  }
+  if (srcInfo) {
+    element.src = srcInfo;
+  }
+  return element;
+};
+  
+  createContent(item) {
+  const content = this.makeElement("div", "flip-box");
+  const flipper = this.makeElement("div", "flipper");
+  const flipper_front = this.makeElement("div", "flip-box__front");
+  const flipper_back = this.makeElement("div", "flip-box__back");
+  const image = this.makeElement("img", "flip-box__img", "", item);
+
+  flipper_back.appendChild(image);
+  flipper.appendChild(flipper_front);
+  flipper.appendChild(flipper_back);
+  content.appendChild(flipper);
+
+  return content;
+};
 
   sortCards() {
     this.cards.sort(() => {
@@ -61,23 +59,20 @@ class Game {
   }
 
   showCards() {
-    let fragment = document.createDocumentFragment();
-
+    const fragment = document.createDocumentFragment();
     this.cards.forEach(item => {
-      fragment.appendChild(createContent(item));
+      fragment.appendChild(this.createContent(item));
     });
     this.main.appendChild(fragment);
   }
 
   toggleCard(element) {
-    let activeCards = [...document.querySelectorAll(".active")];
-
+    const activeCards = [...document.querySelectorAll(".active")];
     if (activeCards.length > 1) {
       activeCards.forEach(item => {
         item.classList.remove("active");
       });
     }
-
     if (element.classList.contains("flip-box")) {
       element.classList.toggle("active");
     }
@@ -85,7 +80,7 @@ class Game {
 
   disableCards() {
     if (this.sameCards()) {
-      let activeElements = document.querySelectorAll(".active");
+      const activeElements = document.querySelectorAll(".active");
       [...activeElements].forEach(item => {
         item.classList.add("hidden");
       });
@@ -93,10 +88,8 @@ class Game {
   }
 
   sameCards() {
-    let activeImageElements = document.querySelectorAll(
-      ".active .flip-box__img"
-    );
-    let images = [...activeImageElements];
+    const activeImageElements = document.querySelectorAll(".active .flip-box__img");
+    const images = [...activeImageElements];
     return images.length === 2 && images[0].src === images[1].src;
   }
 
